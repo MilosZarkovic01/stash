@@ -1,0 +1,13 @@
+---
+description: Testing guidelines
+alwaysApply: false
+---
+
+- Test behavior rather than implementation details.
+- Prefer focused tests over unnecessary end-to-end tests.
+- Cover important edge cases and failure paths.
+- Keep tests deterministic.
+- Reuse existing test utilities and patterns.
+- Avoid unnecessary mocking.
+- Run relevant tests after making changes.
+- Do not weaken or remove tests just to make them pass.

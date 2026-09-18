@@ -1,0 +1,15 @@
+---
+description: General development principles
+alwaysApply: true
+---
+
+- Understand the existing code before making changes.
+- Prefer existing patterns and utilities over introducing new ones.
+- Make the smallest clean change that solves the problem.
+- Do not modify unrelated code.
+- Avoid premature abstraction and overengineering.
+- Keep code simple, readable and maintainable.
+- Preserve existing behavior unless explicitly asked to change it.
+- Consider edge cases and error handling.
+- Remove unused code introduced during the task.
+- Verify changes with appropriate tests, type checks or builds.

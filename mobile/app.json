@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Stash",
+    "slug": "stash",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "scheme": "stash",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.stash.app"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

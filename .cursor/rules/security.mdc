@@ -1,0 +1,12 @@
+---
+description: General security guidelines
+alwaysApply: true
+---
+
+- Never hardcode secrets, credentials or tokens.
+- Never expose secrets in logs or API responses.
+- Treat external input as untrusted.
+- Validate input at system boundaries.
+- Enforce authorization on protected operations.
+- Prefer established framework security mechanisms.
+- Do not weaken security controls to simplify development or testing.

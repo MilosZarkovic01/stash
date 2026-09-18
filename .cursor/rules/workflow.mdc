@@ -1,0 +1,13 @@
+---
+description: Safe implementation workflow
+alwaysApply: true
+---
+
+- Before coding, inspect the relevant files and understand the existing implementation.
+- For non-trivial tasks, identify the simplest implementation approach first.
+- Make changes incrementally.
+- Reuse existing code whenever possible.
+- After implementation, run the most relevant validation.
+- If validation fails, investigate and fix the cause.
+- Do not consider the task complete until the relevant checks pass.
+- Do not refactor unrelated code.

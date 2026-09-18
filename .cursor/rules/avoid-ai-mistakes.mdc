@@ -1,0 +1,15 @@
+---
+description: Avoid common AI coding mistakes
+alwaysApply: true
+---
+
+- Do not rewrite working code without a reason.
+- Do not create new files when an existing file is appropriate.
+- Do not introduce a new dependency without checking existing dependencies first.
+- Do not change public APIs unless required.
+- Do not change database schemas without explicit confirmation.
+- Do not remove tests to make the build pass.
+- Do not silently change behavior to satisfy a test.
+- Do not add unnecessary comments explaining obvious code.
+- Do not refactor unrelated code.
+- Do not claim something works without verifying it.

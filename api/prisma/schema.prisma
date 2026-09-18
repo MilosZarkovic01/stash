@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Currency {
+  RSD
+  EUR
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+  TRANSFER
+}
+
+enum RecurrenceFrequency {
+  MONTHLY
+}
+
+model User {
+  id              String    @id @default(uuid()) @db.Uuid
+  email           String    @unique
+  passwordHash    String?   @map("password_hash")
+  appleUserId     String?   @unique @map("apple_user_id")
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  primaryCurrency Currency  @default(RSD) @map("primary_currency")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  accounts           Account[]
+  transactions       Transaction[]
+  categories         Category[]
+  recurringExpenses  RecurringExpense[]
+  savingsGoals       SavingsGoal[]
+  emailVerifications EmailVerificationToken[]
+  passwordResets     PasswordResetToken[]
+
+  @@map("users")
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("email_verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model Account {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  name           String
+  currency       Currency
+  initialBalance Decimal  @map("initial_balance") @db.Decimal(19, 4)
+  currentBalance Decimal  @map("current_balance") @db.Decimal(19, 4)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions      Transaction[]      @relation("AccountTransactions")
+  incomingTransfers Transaction[]      @relation("TransferDestination")
+  recurringExpenses RecurringExpense[]
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  name      String
+  slug      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions      Transaction[]
+  recurringExpenses RecurringExpense[]
+
+  @@unique([userId, slug])
+  @@index([userId])
+  @@map("categories")
+}
+
+model Transaction {
+  id                   String          @id @default(uuid()) @db.Uuid
+  userId               String          @map("user_id") @db.Uuid
+  type                 TransactionType
+  amount               Decimal         @db.Decimal(19, 4)
+  currency             Currency
+  description          String
+  categoryId           String?         @map("category_id") @db.Uuid
+  accountId            String          @map("account_id") @db.Uuid
+  destinationAccountId String?         @map("destination_account_id") @db.Uuid
+  transactionDate      DateTime        @map("transaction_date") @db.Date
+  createdAt            DateTime        @default(now()) @map("created_at")
+  updatedAt            DateTime        @updatedAt @map("updated_at")
+
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category           Category? @relation(fields: [categoryId], references: [id])
+  account            Account   @relation("AccountTransactions", fields: [accountId], references: [id])
+  destinationAccount Account?  @relation("TransferDestination", fields: [destinationAccountId], references: [id])
+
+  @@index([userId])
+  @@index([accountId])
+  @@index([transactionDate])
+  @@index([categoryId])
+  @@map("transactions")
+}
+
+model RecurringExpense {
+  id             String              @id @default(uuid()) @db.Uuid
+  userId         String              @map("user_id") @db.Uuid
+  name           String
+  amount         Decimal             @db.Decimal(19, 4)
+  currency       Currency
+  categoryId     String              @map("category_id") @db.Uuid
+  accountId      String              @map("account_id") @db.Uuid
+  frequency      RecurrenceFrequency @default(MONTHLY)
+  nextOccurrence DateTime            @map("next_occurrence") @db.Date
+  active         Boolean             @default(true)
+  createdAt      DateTime            @default(now()) @map("created_at")
+  updatedAt      DateTime            @updatedAt @map("updated_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id])
+  account  Account  @relation(fields: [accountId], references: [id])
+
+  @@index([userId])
+  @@index([accountId])
+  @@index([categoryId])
+  @@map("recurring_expenses")
+}
+
+model SavingsGoal {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  name      String
+  currency  Currency
+  target    Decimal  @db.Decimal(19, 4)
+  year      Int
+  month     Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, year, month, currency])
+  @@index([userId])
+  @@map("savings_goals")
+}
