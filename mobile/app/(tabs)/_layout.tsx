@@ -1,17 +1,26 @@
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
+import { useAuth } from '../../src/lib/auth';
+import { colors } from '../../src/ui/theme';
 
 export default function TabsLayout() {
+  const { token, user } = useAuth();
+  if (!token) {
+    return <Redirect href="/(auth)/login" />;
+  }
+  if (user && !user.emailVerified) {
+    return <Redirect href="/(auth)/verify" />;
+  }
   return (
     <Tabs
       screenOptions={{
         headerShadowVisible: false,
-        headerStyle: { backgroundColor: '#FFFFFF' },
-        headerTitleStyle: { color: '#111111', fontWeight: '600' },
-        tabBarActiveTintColor: '#111111',
-        tabBarInactiveTintColor: '#8A8A8A',
+        headerStyle: { backgroundColor: colors.bg },
+        headerTitleStyle: { color: colors.fg, fontWeight: '600' },
+        tabBarActiveTintColor: colors.fg,
+        tabBarInactiveTintColor: colors.muted,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#E5E5E5',
+          backgroundColor: colors.bg,
+          borderTopColor: colors.line,
         },
       }}
     >

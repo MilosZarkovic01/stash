@@ -24,6 +24,17 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-stash}:${POSTGRES_PASSWORD:-stash}@postgres:5432/${POSTGRES_DB:-stash}?schema=public
       PORT: 3000
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8081}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-development}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-http://localhost:8081}
+      MAIL_TRANSPORT: ${MAIL_TRANSPORT:-console}
+      MAIL_FROM: ${MAIL_FROM:-stash@localhost}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      APPLE_CLIENT_ID: ${APPLE_CLIENT_ID:-}
+      AI_CLASSIFY_URL: ${AI_CLASSIFY_URL:-}
     depends_on:
       postgres:
         condition: service_healthy

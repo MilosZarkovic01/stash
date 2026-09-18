@@ -1,6 +1,6 @@
 # Stash
 
-Personal finance tracker (iOS-first). This repository is the Phase 1 foundation from `plan-revised.md`.
+Personal finance tracker (iOS-first). Implements the MVP in `plan-revised.md`.
 
 ## Stack
 
@@ -13,6 +13,8 @@ Personal finance tracker (iOS-first). This repository is the Phase 1 foundation 
 ```bash
 cp .env.example .env
 ```
+
+Required in `.env`: `JWT_SECRET`. Email verification uses the console mailer by default (tokens are logged by the API). Set `MAIL_TRANSPORT=smtp` plus SMTP vars to send real mail. Leave `APPLE_CLIENT_ID` empty until Apple is configured — Sign in with Apple then fails with a clear error. Leave `AI_CLASSIFY_URL` empty to use the low-confidence classifier stub.
 
 Start Postgres and the API:
 
@@ -41,4 +43,4 @@ npm ci
 npx expo start
 ```
 
-The app reads `EXPO_PUBLIC_API_URL` (see `.env.example`).
+The app reads `EXPO_PUBLIC_API_URL` (see `.env.example`). On a physical device, point that URL at your machine, not localhost.

@@ -21,3 +21,20 @@ export function subtractMoney(left: Decimal, right: Decimal): Decimal {
 export function formatMoney(value: Decimal): string {
   return value.toFixed(4);
 }
+
+export function toMoney(value: Decimal | { toString(): string }): Decimal {
+  return value instanceof Decimal ? value : new Decimal(value.toString());
+}
+
+export function divideMoney(value: Decimal, divisor: number): Decimal {
+  if (divisor === 0) {
+    return new Decimal(0);
+  }
+  return value.div(divisor);
+}
+
+export function assertPositiveMoney(value: Decimal): void {
+  if (value.lte(0)) {
+    throw new Error('Amount must be positive');
+  }
+}

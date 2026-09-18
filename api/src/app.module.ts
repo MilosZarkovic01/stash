@@ -1,3 +1,4 @@
+import './load-env';
 import { Module } from '@nestjs/common';
 import { AccountsModule } from './accounts/accounts.module';
 import { AiModule } from './ai/ai.module';

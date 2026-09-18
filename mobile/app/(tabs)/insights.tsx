@@ -1,28 +1,82 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import { Text, View } from 'react-native';
+import { api } from '../../src/lib/api';
+import { displayMoney } from '../../src/lib/format';
+import { ListRow } from '../../src/ui/ListRow';
+import { Screen } from '../../src/ui/Screen';
+import { EmptyState, ErrorState, LoadingState } from '../../src/ui/states';
+import { type } from '../../src/ui/theme';
 
 export default function InsightsScreen() {
+  const insights = useQuery({ queryKey: ['insights'], queryFn: api.insights });
+
+  if (insights.isLoading) {
+    return (
+      <Screen>
+        <LoadingState />
+      </Screen>
+    );
+  }
+  if (insights.isError) {
+    return (
+      <Screen>
+        <ErrorState message={insights.error.message} />
+      </Screen>
+    );
+  }
+  const data = insights.data;
+  if (!data?.spendingByCategory.length && !data?.topExpenses.length) {
+    return (
+      <Screen>
+        <Text style={type.title}>Insights</Text>
+        <EmptyState title="No spending yet" body="Expenses this month will show up here." />
+      </Screen>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Insights</Text>
-      <Text style={styles.body}>Spending insights will appear here.</Text>
-    </View>
+    <Screen>
+      <Text style={type.title}>Insights</Text>
+      <Text style={type.muted}>
+        {data.month}/{data.year}
+      </Text>
+      <Text style={type.heading}>By category</Text>
+      {data.spendingByCategory.map((row) => (
+        <ListRow
+          key={`${row.currency}-${row.category}`}
+          title={row.category}
+          subtitle={`${(Number(row.share) * 100).toFixed(0)}% of ${row.currency} spend`}
+          meta={displayMoney(row.amount, row.currency)}
+        />
+      ))}
+      <Text style={type.heading}>This month vs last</Text>
+      {data.vsPreviousMonth.map((row) => (
+        <ListRow
+          key={row.category}
+          title={row.category}
+          subtitle={`Previous ${row.previous}`}
+          meta={row.current}
+        />
+      ))}
+      <Text style={type.heading}>Top expenses</Text>
+      {data.topExpenses.map((row) => (
+        <ListRow
+          key={row.id}
+          title={row.description}
+          subtitle={`${row.category} · ${row.transactionDate}`}
+          meta={displayMoney(row.amount, row.currency)}
+        />
+      ))}
+      <Text style={type.heading}>Over time</Text>
+      {data.spendingOverTime.map((row) => (
+        <View key={`${row.currency}-${row.date}`}>
+          <ListRow
+            title={row.date}
+            subtitle={row.currency}
+            meta={displayMoney(row.amount, row.currency)}
+          />
+        </View>
+      ))}
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    padding: 24,
-    gap: 8,
-  },
-  title: {
-    color: '#111111',
-    fontSize: 28,
-    fontWeight: '600',
-  },
-  body: {
-    color: '#8A8A8A',
-    fontSize: 16,
-  },
-});

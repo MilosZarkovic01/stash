@@ -1,0 +1,17 @@
+export const DEFAULT_CATEGORIES: Array<{ name: string; slug: string }> = [
+  { name: 'Food', slug: 'food' },
+  { name: 'Groceries', slug: 'groceries' },
+  { name: 'Eating Out', slug: 'eating-out' },
+  { name: 'Taxi', slug: 'taxi' },
+  { name: 'Transportation', slug: 'transportation' },
+  { name: 'Fuel', slug: 'fuel' },
+  { name: 'Travel', slug: 'travel' },
+  { name: 'Entertainment', slug: 'entertainment' },
+  { name: 'Shopping', slug: 'shopping' },
+  { name: 'Bills', slug: 'bills' },
+  { name: 'Rent', slug: 'rent' },
+  { name: 'Loan', slug: 'loan' },
+  { name: 'Subscriptions', slug: 'subscriptions' },
+  { name: 'Health', slug: 'health' },
+  { name: 'Other', slug: 'other' },
+];
